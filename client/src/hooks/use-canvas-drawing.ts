@@ -112,10 +112,33 @@ export function useCanvasDrawing(
 
   const getCanvasDataURL = useCallback(() => {
     if (canvasRef.current) {
-      return canvasRef.current.toDataURL('image/png');
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+      
+      // Create a new canvas with white background
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = canvas.width;
+      tempCanvas.height = canvas.height;
+      const tempCtx = tempCanvas.getContext('2d');
+      
+      if (tempCtx) {
+        // Fill with white background
+        tempCtx.fillStyle = '#FFFFFF';
+        tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+        
+        // Draw the original canvas on top
+        tempCtx.drawImage(canvas, 0, 0);
+        
+        return tempCanvas.toDataURL('image/png');
+      }
     }
     return null;
   }, [canvasRef]);
+
+  const toggleStraightLine = useCallback(() => {
+    setIsStraightLine(prev => !prev);
+  }, []);
 
   return {
     isDrawing,
@@ -124,5 +147,7 @@ export function useCanvasDrawing(
     stopDrawing,
     clearCanvas,
     getCanvasDataURL,
+    toggleStraightLine,
+    isStraightLine,
   };
 }

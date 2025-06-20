@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Eraser, Download, CheckCircle } from "lucide-react";
+import { ChevronLeft, ChevronRight, Eraser, Download, CheckCircle, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 
@@ -7,11 +7,13 @@ interface ToolbarProps {
   totalImages: number;
   brushSize: number;
   saveStatus: string;
+  isStraightLine?: boolean;
   onBrushSizeChange: (size: number) => void;
   onNextImage: () => void;
   onPrevImage: () => void;
   onSaveAnnotation: () => void;
   onClearCanvas: () => void;
+  onToggleStraightLine?: () => void;
 }
 
 export default function Toolbar({
@@ -19,11 +21,13 @@ export default function Toolbar({
   totalImages,
   brushSize,
   saveStatus,
+  isStraightLine = false,
   onBrushSizeChange,
   onNextImage,
   onPrevImage,
   onSaveAnnotation,
   onClearCanvas,
+  onToggleStraightLine,
 }: ToolbarProps) {
   const handleSave = () => {
     if ((window as any).saveAnnotation) {
@@ -88,6 +92,17 @@ export default function Toolbar({
               </div>
               <span className="text-sm text-gray-600 min-w-0">{brushSize}px</span>
             </div>
+
+            <Button
+              variant={isStraightLine ? "default" : "outline"}
+              size="sm"
+              onClick={onToggleStraightLine}
+              className="flex items-center"
+              title="Hold Shift or click to draw straight lines"
+            >
+              <Minus className="w-4 h-4 mr-2" />
+              {isStraightLine ? "Straight" : "Freehand"}
+            </Button>
 
             <Button
               variant="outline"

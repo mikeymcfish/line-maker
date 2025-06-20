@@ -10,6 +10,7 @@ export default function AnnotationTool() {
   const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
   const [brushSize, setBrushSize] = useState<number>(3);
   const [saveStatus, setSaveStatus] = useState<string>("Ready");
+  const [isStraightLine, setIsStraightLine] = useState<boolean>(false);
 
   const { data: imagesData, refetch: refetchImages } = useQuery({
     queryKey: ["/api/images"],

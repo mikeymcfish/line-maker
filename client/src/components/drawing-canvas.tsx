@@ -31,6 +31,8 @@ export default function DrawingCanvas({
     stopDrawing,
     clearCanvas,
     getCanvasDataURL,
+    toggleStraightLine,
+    isStraightLine,
   } = useCanvasDrawing(canvasRef, brushSize);
 
   const saveMutation = useMutation({

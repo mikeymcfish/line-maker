@@ -109,11 +109,12 @@ export default function ImageSidebar({
               <input
                 ref={fileInputRef}
                 type="file"
-                {...({ webkitdirectory: "" } as any)}
+                webkitdirectory=""
                 multiple
                 accept="image/*"
                 onChange={(e) => handleFileSelect(e.target.files)}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                style={{ webkitAppearance: 'none' }}
               />
               <div
                 className={`flex items-center justify-center w-full h-20 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
