@@ -153,13 +153,8 @@ export default function ImageSidebar({
                 />
                 <Button
                   size="sm"
-                  onClick={() => {
-                    toast({
-                      title: "Manual folder loading",
-                      description: "Use file browser below for now",
-                      variant: "default",
-                    });
-                  }}
+                  onClick={handleLoadFolder}
+                  disabled={folderMutation.isPending}
                   className="px-3"
                 >
                   <Upload className="w-4 h-4" />

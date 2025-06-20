@@ -4,6 +4,9 @@ import { storage } from "./storage";
 import multer from "multer";
 import path from "path";
 import fs from "fs/promises";
+import fsSync from "fs";
+import sharp from "sharp";
+import type { Image } from "@shared/schema";
 import { insertImageSchema, insertAnnotationSchema } from "@shared/schema";
 
 const upload = multer({
@@ -55,6 +58,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error uploading images:", error);
       res.status(500).json({ message: "Failed to upload images" });
+    }
+  });
+
+  // Load images from folder path endpoint
+  app.post('/api/images/load-folder', async (req, res) => {
+    try {
+      const { folderPath } = req.body;
+      
+      if (!folderPath) {
+        return res.status(400).json({ error: 'Folder path is required' });
+      }
+
+      // Check if folder exists
+      if (!fsSync.existsSync(folderPath)) {
+        return res.status(400).json({ error: 'Folder does not exist' });
+      }
+
+      // Read directory and filter image files
+      const files = fsSync.readdirSync(folderPath);
+      const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'];
+      const imageFiles = files.filter((file: string) => 
+        imageExtensions.includes(path.extname(file).toLowerCase())
+      );
+
+      if (imageFiles.length === 0) {
+        return res.status(400).json({ error: 'No image files found in folder' });
+      }
+
+      const uploadedImages: Image[] = [];
+
+      for (const filename of imageFiles) {
+        const fullPath = path.join(folderPath, filename);
+        const stats = fsSync.statSync(fullPath);
+        
+        // Copy file to uploads directory
+        const uploadsDir = './uploads/images';
+        if (!fsSync.existsSync(uploadsDir)) {
+          fsSync.mkdirSync(uploadsDir, { recursive: true });
+        }
+        
+        const destPath = path.join(uploadsDir, filename);
+        fsSync.copyFileSync(fullPath, destPath);
+
+        // Get image dimensions
+        let width: number | null = null;
+        let height: number | null = null;
+        
+        try {
+          const dimensions = await sharp(destPath).metadata();
+          width = dimensions.width || null;
+          height = dimensions.height || null;
+        } catch (error) {
+          console.warn('Could not get image dimensions:', error);
+        }
+
+        const image = await storage.createImage({
+          filename,
+          originalPath: destPath,
+          size: stats.size,
+          width,
+          height,
+        });
+        
+        uploadedImages.push(image);
+      }
+
+      res.json({ images: uploadedImages });
+    } catch (error) {
+      console.error('Error loading folder:', error);
+      res.status(500).json({ error: 'Failed to load folder' });
     }
   });
 

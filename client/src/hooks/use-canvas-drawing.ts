@@ -73,8 +73,9 @@ export function useCanvasDrawing(
     if (!ctx) return;
     
     const currentPos = getMousePos(e);
+    const currentIsStraightLine = isStraightLine || e.shiftKey;
     
-    if (isStraightLine) {
+    if (currentIsStraightLine) {
       // For straight lines, clear and redraw from start to current position
       if (imageDataRef.current) {
         ctx.putImageData(imageDataRef.current, 0, 0);
