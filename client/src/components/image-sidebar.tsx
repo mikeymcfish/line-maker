@@ -24,8 +24,10 @@ export default function ImageSidebar({
 
   const uploadMutation = useMutation({
     mutationFn: async (files: FileList) => {
+      console.log('Uploading files:', files.length);
       const formData = new FormData();
-      Array.from(files).forEach((file) => {
+      Array.from(files).forEach((file, index) => {
+        console.log(`File ${index}:`, file.name, file.type, file.size);
         formData.append('images', file);
       });
       
