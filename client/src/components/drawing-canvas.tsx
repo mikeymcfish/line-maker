@@ -85,7 +85,7 @@ export default function DrawingCanvas({
   }, [selectedImage, clearCanvas, onSaveStatusChange]);
 
   const handleSaveAnnotation = useCallback(() => {
-    if (!selectedImage) return;
+    if (!selectedImage || !hasChanges) return;
     
     const canvasData = getCanvasDataURL();
     if (!canvasData) return;
@@ -96,7 +96,7 @@ export default function DrawingCanvas({
       filename: selectedImage.filename,
       canvasData,
     });
-  }, [selectedImage, getCanvasDataURL, onSaveStatusChange, saveMutation]);
+  }, [selectedImage, hasChanges, getCanvasDataURL, onSaveStatusChange, saveMutation]);
 
   const handleClearCanvas = useCallback(() => {
     clearCanvas();
@@ -131,10 +131,12 @@ export default function DrawingCanvas({
   useEffect(() => {
     (window as any).saveAnnotation = handleSaveAnnotation;
     (window as any).clearCanvas = handleClearCanvas;
+    (window as any).markCanvasChanged = () => setHasChanges(true);
     
     return () => {
       delete (window as any).saveAnnotation;
       delete (window as any).clearCanvas;
+      delete (window as any).markCanvasChanged;
     };
   }, [handleSaveAnnotation, handleClearCanvas]);
 

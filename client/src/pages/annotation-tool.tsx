@@ -65,9 +65,11 @@ export default function AnnotationTool() {
           totalImages={images.length}
           brushSize={brushSize}
           saveStatus={saveStatus}
+          isStraightLine={isStraightLine}
           onBrushSizeChange={setBrushSize}
           onNextImage={handleNextImage}
           onPrevImage={handlePrevImage}
+          onToggleStraightLine={() => setIsStraightLine(!isStraightLine)}
           onSaveAnnotation={() => {
             if ((window as any).saveAnnotation) {
               (window as any).saveAnnotation();

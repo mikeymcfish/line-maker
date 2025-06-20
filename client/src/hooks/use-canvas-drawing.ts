@@ -97,9 +97,13 @@ export function useCanvasDrawing(
   }, [isDrawing, canvasRef, getMousePos, isStraightLine]);
 
   const stopDrawing = useCallback(() => {
+    if (isDrawing) {
+      // Mark that changes have been made when drawing stops
+      (window as any).markCanvasChanged?.();
+    }
     setIsDrawing(false);
     lastPointRef.current = null;
-  }, []);
+  }, [isDrawing]);
 
   const clearCanvas = useCallback(() => {
     if (canvasRef.current) {

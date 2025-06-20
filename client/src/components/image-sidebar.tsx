@@ -114,7 +114,7 @@ export default function ImageSidebar({
                 accept="image/*"
                 onChange={(e) => handleFileSelect(e.target.files)}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                style={{ webkitAppearance: 'none' }}
+                style={{ WebkitAppearance: 'none' }}
               />
               <div
                 className={`flex items-center justify-center w-full h-20 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
