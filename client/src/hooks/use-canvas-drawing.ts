@@ -3,7 +3,9 @@ import { useCallback, useRef, useState, useEffect } from "react";
 export function useCanvasDrawing(
   canvasRef: React.RefObject<HTMLCanvasElement>,
   brushSize: number,
-  isStraightLine: boolean = false
+  isStraightLine: boolean = false,
+  drawingColor: string = "#000000",
+  drawingTool: "pen" | "circle" = "pen"
 ) {
   const [isDrawing, setIsDrawing] = useState(false);
   const lastPointRef = useRef<{ x: number; y: number } | null>(null);
@@ -25,7 +27,8 @@ export function useCanvasDrawing(
     if (canvasRef.current) {
       const ctx = canvasRef.current.getContext('2d');
       if (ctx) {
-        ctx.strokeStyle = '#000000'; // Black lines only
+        ctx.strokeStyle = drawingColor;
+        ctx.fillStyle = drawingColor;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.lineWidth = brushSize;
@@ -33,7 +36,7 @@ export function useCanvasDrawing(
         ctx.globalCompositeOperation = 'source-over';
       }
     }
-  }, [canvasRef, brushSize]);
+  }, [canvasRef, brushSize, drawingColor]);
 
   const getMousePos = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!canvasRef.current) return { x: 0, y: 0 };
@@ -75,7 +78,21 @@ export function useCanvasDrawing(
     const currentPos = getMousePos(e);
     const currentIsStraightLine = isStraightLine || e.shiftKey;
     
-    if (currentIsStraightLine) {
+    if (drawingTool === "circle") {
+      // Circle drawing tool
+      if (imageDataRef.current) {
+        ctx.putImageData(imageDataRef.current, 0, 0);
+      }
+      
+      const radius = Math.sqrt(
+        Math.pow(currentPos.x - startPointRef.current.x, 2) + 
+        Math.pow(currentPos.y - startPointRef.current.y, 2)
+      );
+      
+      ctx.beginPath();
+      ctx.arc(startPointRef.current.x, startPointRef.current.y, radius, 0, 2 * Math.PI);
+      ctx.stroke();
+    } else if (currentIsStraightLine) {
       // For straight lines, clear and redraw from start to current position
       if (imageDataRef.current) {
         ctx.putImageData(imageDataRef.current, 0, 0);
@@ -92,7 +109,7 @@ export function useCanvasDrawing(
       }
       lastPointRef.current = currentPos;
     }
-  }, [isDrawing, canvasRef, getMousePos, isStraightLine]);
+  }, [isDrawing, canvasRef, getMousePos, isStraightLine, drawingTool]);
 
   const stopDrawing = useCallback(() => {
     if (isDrawing) {

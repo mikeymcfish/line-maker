@@ -10,6 +10,8 @@ interface DrawingCanvasProps {
   selectedImage: Image | undefined;
   brushSize: number;
   isStraightLine: boolean;
+  drawingColor: string;
+  drawingTool: "pen" | "circle";
   onSaveStatusChange: (status: string) => void;
 }
 
@@ -17,6 +19,8 @@ export default function DrawingCanvas({
   selectedImage,
   brushSize,
   isStraightLine,
+  drawingColor,
+  drawingTool,
   onSaveStatusChange,
 }: DrawingCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -33,7 +37,7 @@ export default function DrawingCanvas({
     stopDrawing,
     clearCanvas,
     getCanvasDataURL,
-  } = useCanvasDrawing(canvasRef, brushSize, isStraightLine);
+  } = useCanvasDrawing(canvasRef, brushSize, isStraightLine, drawingColor, drawingTool);
 
   const saveMutation = useMutation({
     mutationFn: async ({ imageId, filename, canvasData }: {

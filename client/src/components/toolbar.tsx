@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Eraser, Download, CheckCircle, Minus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Eraser, Download, CheckCircle, Minus, Edit3, Circle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 
@@ -26,12 +26,16 @@ export default function Toolbar({
   brushSize,
   saveStatus,
   isStraightLine = false,
+  drawingColor = "#000000",
+  drawingTool = "pen",
   onBrushSizeChange,
   onNextImage,
   onPrevImage,
   onSaveAnnotation,
   onClearCanvas,
   onToggleStraightLine,
+  onColorChange,
+  onToolChange,
 }: ToolbarProps) {
   const handleSave = () => {
     if ((window as any).saveAnnotation) {
@@ -107,6 +111,64 @@ export default function Toolbar({
               <Minus className="w-4 h-4 mr-2" />
               {isStraightLine ? "Straight" : "Freehand"}
             </Button>
+
+            {/* Color Selection */}
+            <div className="flex items-center space-x-2">
+              <span className="text-sm font-medium text-gray-700">Color:</span>
+              <div className="flex space-x-1">
+                <Button
+                  variant={drawingColor === "#000000" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => onColorChange?.("#000000")}
+                  className="w-8 h-8 p-0"
+                  style={{ backgroundColor: drawingColor === "#000000" ? "#000000" : "transparent" }}
+                  title="Black (X key)"
+                >
+                  <div className="w-4 h-4 bg-black rounded"></div>
+                </Button>
+                <Button
+                  variant={drawingColor === "#FF0000" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => onColorChange?.("#FF0000")}
+                  className="w-8 h-8 p-0"
+                  title="Red (X key)"
+                >
+                  <div className="w-4 h-4 bg-red-500 rounded"></div>
+                </Button>
+                <Button
+                  variant={drawingColor === "#0000FF" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => onColorChange?.("#0000FF")}
+                  className="w-8 h-8 p-0"
+                  title="Blue (X key)"
+                >
+                  <div className="w-4 h-4 bg-blue-500 rounded"></div>
+                </Button>
+              </div>
+            </div>
+
+            {/* Tool Selection */}
+            <div className="flex items-center space-x-2">
+              <span className="text-sm font-medium text-gray-700">Tool:</span>
+              <div className="flex space-x-1">
+                <Button
+                  variant={drawingTool === "pen" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => onToolChange?.("pen")}
+                  title="Pen Tool (S key)"
+                >
+                  <Edit3 className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant={drawingTool === "circle" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => onToolChange?.("circle")}
+                  title="Circle Tool (S key)"
+                >
+                  <Circle className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
 
             <Button
               variant="outline"
