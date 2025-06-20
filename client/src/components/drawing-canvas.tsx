@@ -78,6 +78,17 @@ export default function DrawingCanvas({
         if (canvasRef.current) {
           canvasRef.current.width = img.naturalWidth;
           canvasRef.current.height = img.naturalHeight;
+          
+          // Reapply canvas properties after resizing
+          const ctx = canvasRef.current.getContext('2d');
+          if (ctx) {
+            ctx.strokeStyle = drawingColor;
+            ctx.fillStyle = drawingColor;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.lineWidth = brushSize;
+            ctx.globalCompositeOperation = 'source-over';
+          }
         }
       };
       img.src = `/api/images/${selectedImage.filename}`;
@@ -86,7 +97,7 @@ export default function DrawingCanvas({
       clearCanvas();
       onSaveStatusChange("Ready");
     }
-  }, [selectedImage, clearCanvas, onSaveStatusChange]);
+  }, [selectedImage, clearCanvas, onSaveStatusChange, brushSize, drawingColor]);
 
   const handleSaveAnnotation = useCallback(() => {
     if (!selectedImage || !hasChanges) return;
