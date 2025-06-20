@@ -122,7 +122,7 @@ export default function Toolbar({
                   onClick={() => onColorChange?.("#000000")}
                   className="w-8 h-8 p-0"
                   style={{ backgroundColor: drawingColor === "#000000" ? "#000000" : "transparent" }}
-                  title="Black (X key)"
+                  title="Black (C key)"
                 >
                   <div className="w-4 h-4 bg-black rounded"></div>
                 </Button>
@@ -131,7 +131,7 @@ export default function Toolbar({
                   size="sm"
                   onClick={() => onColorChange?.("#FF0000")}
                   className="w-8 h-8 p-0"
-                  title="Red (X key)"
+                  title="Red (C key)"
                 >
                   <div className="w-4 h-4 bg-red-500 rounded"></div>
                 </Button>
@@ -140,7 +140,7 @@ export default function Toolbar({
                   size="sm"
                   onClick={() => onColorChange?.("#0000FF")}
                   className="w-8 h-8 p-0"
-                  title="Blue (X key)"
+                  title="Blue (C key)"
                 >
                   <div className="w-4 h-4 bg-blue-500 rounded"></div>
                 </Button>
@@ -155,7 +155,7 @@ export default function Toolbar({
                   variant={drawingTool === "pen" ? "default" : "outline"}
                   size="sm"
                   onClick={() => onToolChange?.("pen")}
-                  title="Pen Tool (S key)"
+                  title="Pen Tool (T key)"
                 >
                   <Edit3 className="w-4 h-4" />
                 </Button>
@@ -163,7 +163,7 @@ export default function Toolbar({
                   variant={drawingTool === "circle" ? "default" : "outline"}
                   size="sm"
                   onClick={() => onToolChange?.("circle")}
-                  title="Circle Tool (S key)"
+                  title="Circle Tool (T key)"
                 >
                   <Circle className="w-4 h-4" />
                 </Button>

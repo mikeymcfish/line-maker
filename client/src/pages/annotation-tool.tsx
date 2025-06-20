@@ -31,14 +31,17 @@ export default function AnnotationTool() {
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      // Only handle keys when not typing in input fields
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      // Only handle keys when not typing in input fields and no modifiers are pressed
+      if (e.target instanceof HTMLInputElement || 
+          e.target instanceof HTMLTextAreaElement ||
+          e.ctrlKey || e.metaKey || e.altKey) {
         return;
       }
       
-      // Prevent default behavior for our handled keys
-      if (e.key.toLowerCase() === 'x') {
+      // Handle specific keys - using keyCode to avoid conflicts
+      if (e.code === 'KeyC' && !e.shiftKey) { // C key for color cycling
         e.preventDefault();
+        e.stopImmediatePropagation();
         // Cycle through colors: black -> red -> blue -> black
         setDrawingColor(prev => {
           switch (prev) {
@@ -48,15 +51,16 @@ export default function AnnotationTool() {
             default: return "#000000";
           }
         });
-      } else if (e.key.toLowerCase() === 's') {
+      } else if (e.code === 'KeyT' && !e.shiftKey) { // T key for tool cycling
         e.preventDefault();
+        e.stopImmediatePropagation();
         // Cycle through tools: pen -> circle -> pen
         setDrawingTool(prev => prev === "pen" ? "circle" : "pen");
       }
     };
 
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
+    document.addEventListener('keydown', handleKeyPress, true); // Use capture phase
+    return () => document.removeEventListener('keydown', handleKeyPress, true);
   }, []);
 
   const selectedImage = images[selectedImageIndex];
