@@ -53,6 +53,40 @@ export default function ImageSidebar({
     },
   });
 
+  const folderMutation = useMutation({
+    mutationFn: async (folderPath: string) => {
+      const response = await apiRequest('POST', '/api/images/load-folder', { folderPath });
+      return response.json();
+    },
+    onSuccess: (data) => {
+      onImagesUploaded(data.images);
+      toast({
+        title: "Folder loaded successfully",
+        description: `${data.images.length} images loaded from folder`,
+      });
+      setFolderPath("");
+    },
+    onError: (error) => {
+      toast({
+        title: "Folder load failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleLoadFolder = () => {
+    if (!folderPath.trim()) {
+      toast({
+        title: "Invalid path",
+        description: "Please enter a valid folder path",
+        variant: "destructive",
+      });
+      return;
+    }
+    folderMutation.mutate(folderPath.trim());
+  };
+
   const handleFileSelect = (files: FileList | null) => {
     if (!files || files.length === 0) return;
     

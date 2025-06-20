@@ -2,10 +2,10 @@ import { useCallback, useRef, useState, useEffect } from "react";
 
 export function useCanvasDrawing(
   canvasRef: React.RefObject<HTMLCanvasElement>,
-  brushSize: number
+  brushSize: number,
+  isStraightLine: boolean = false
 ) {
   const [isDrawing, setIsDrawing] = useState(false);
-  const [isStraightLine, setIsStraightLine] = useState(false);
   const lastPointRef = useRef<{ x: number; y: number } | null>(null);
   const startPointRef = useRef<{ x: number; y: number } | null>(null);
   const imageDataRef = useRef<ImageData | null>(null);
@@ -56,9 +56,6 @@ export function useCanvasDrawing(
     const pos = getMousePos(e);
     lastPointRef.current = pos;
     startPointRef.current = pos;
-    
-    // Check if Shift key is held for straight line
-    setIsStraightLine(e.shiftKey);
     
     const ctx = canvasRef.current.getContext('2d');
     if (ctx) {
@@ -140,10 +137,6 @@ export function useCanvasDrawing(
     return null;
   }, [canvasRef]);
 
-  const toggleStraightLine = useCallback(() => {
-    setIsStraightLine(prev => !prev);
-  }, []);
-
   return {
     isDrawing,
     startDrawing,
@@ -151,7 +144,5 @@ export function useCanvasDrawing(
     stopDrawing,
     clearCanvas,
     getCanvasDataURL,
-    toggleStraightLine,
-    isStraightLine,
   };
 }
