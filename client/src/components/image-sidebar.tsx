@@ -101,31 +101,50 @@ export default function ImageSidebar({
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Load Image Folder
           </label>
-          <div className="relative">
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={(e) => handleFileSelect(e.target.files)}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            />
-            <div
-              className={`flex items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
-                isDragOver
-                  ? 'border-blue-400 bg-blue-50'
-                  : 'border-gray-300 bg-gray-50 hover:bg-gray-100'
-              }`}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-            >
-              <div className="text-center">
-                <FolderOpen className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                <p className="text-sm text-gray-600">
-                  {uploadMutation.isPending ? 'Uploading...' : 'Click to select images'}
-                </p>
-                <p className="text-xs text-gray-500">or drag images here</p>
+          <div className="space-y-2">
+            {/* Folder Selection */}
+            <div className="relative">
+              <input
+                ref={fileInputRef}
+                type="file"
+                {...({ webkitdirectory: "" } as any)}
+                multiple
+                accept="image/*"
+                onChange={(e) => handleFileSelect(e.target.files)}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+              <div
+                className={`flex items-center justify-center w-full h-20 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
+                  isDragOver
+                    ? 'border-blue-400 bg-blue-50'
+                    : 'border-gray-300 bg-gray-50 hover:bg-gray-100'
+                }`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+              >
+                <div className="text-center">
+                  <FolderOpen className="w-6 h-6 text-gray-400 mx-auto mb-1" />
+                  <p className="text-sm text-gray-600">
+                    {uploadMutation.isPending ? 'Uploading...' : 'Click to select folder'}
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            {/* Individual Files Selection */}
+            <div className="relative">
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={(e) => handleFileSelect(e.target.files)}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+              <div className="flex items-center justify-center w-full h-16 border border-gray-300 bg-gray-50 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors">
+                <div className="text-center">
+                  <p className="text-xs text-gray-600">Or select individual images</p>
+                </div>
               </div>
             </div>
           </div>

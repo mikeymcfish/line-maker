@@ -17,8 +17,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Upload images endpoint
   app.post("/api/images/upload", upload.array('images'), async (req, res) => {
     try {
+      console.log('Upload request received');
+      console.log('Files:', req.files);
+      console.log('Body:', req.body);
+      
       const files = req.files as Express.Multer.File[];
       if (!files || files.length === 0) {
+        console.log('No files found in request');
         return res.status(400).json({ message: "No files uploaded" });
       }
 
@@ -39,6 +44,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           filename,
           originalPath: permanentPath,
           size: file.size,
+          width: null,
+          height: null,
         };
 
         const validatedData = insertImageSchema.parse(imageData);
