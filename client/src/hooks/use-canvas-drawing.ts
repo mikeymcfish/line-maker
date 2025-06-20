@@ -5,7 +5,10 @@ export function useCanvasDrawing(
   brushSize: number
 ) {
   const [isDrawing, setIsDrawing] = useState(false);
+  const [isStraightLine, setIsStraightLine] = useState(false);
   const lastPointRef = useRef<{ x: number; y: number } | null>(null);
+  const startPointRef = useRef<{ x: number; y: number } | null>(null);
+  const imageDataRef = useRef<ImageData | null>(null);
 
   // Update brush size when it changes
   useEffect(() => {
@@ -52,27 +55,46 @@ export function useCanvasDrawing(
     setIsDrawing(true);
     const pos = getMousePos(e);
     lastPointRef.current = pos;
+    startPointRef.current = pos;
+    
+    // Check if Shift key is held for straight line
+    setIsStraightLine(e.shiftKey);
     
     const ctx = canvasRef.current.getContext('2d');
     if (ctx) {
+      // Save the current canvas state for straight line drawing
+      imageDataRef.current = ctx.getImageData(0, 0, canvasRef.current.width, canvasRef.current.height);
       ctx.beginPath();
       ctx.moveTo(pos.x, pos.y);
     }
   }, [canvasRef, getMousePos]);
 
   const continueDrawing = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDrawing || !canvasRef.current || !lastPointRef.current) return;
+    if (!isDrawing || !canvasRef.current || !startPointRef.current) return;
     
     const ctx = canvasRef.current.getContext('2d');
     if (!ctx) return;
     
     const currentPos = getMousePos(e);
     
-    ctx.lineTo(currentPos.x, currentPos.y);
-    ctx.stroke();
-    
-    lastPointRef.current = currentPos;
-  }, [isDrawing, canvasRef, getMousePos]);
+    if (isStraightLine) {
+      // For straight lines, clear and redraw from start to current position
+      if (imageDataRef.current) {
+        ctx.putImageData(imageDataRef.current, 0, 0);
+      }
+      ctx.beginPath();
+      ctx.moveTo(startPointRef.current.x, startPointRef.current.y);
+      ctx.lineTo(currentPos.x, currentPos.y);
+      ctx.stroke();
+    } else {
+      // Normal freehand drawing
+      if (lastPointRef.current) {
+        ctx.lineTo(currentPos.x, currentPos.y);
+        ctx.stroke();
+      }
+      lastPointRef.current = currentPos;
+    }
+  }, [isDrawing, canvasRef, getMousePos, isStraightLine]);
 
   const stopDrawing = useCallback(() => {
     setIsDrawing(false);

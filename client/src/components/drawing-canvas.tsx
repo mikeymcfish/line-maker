@@ -21,6 +21,7 @@ export default function DrawingCanvas({
   const backgroundImageRef = useRef<HTMLImageElement>(null);
   const [canvasSize, setCanvasSize] = useState({ width: 1200, height: 800 });
   const [zoom, setZoom] = useState(1);
+  const [hasChanges, setHasChanges] = useState(false);
   const { toast } = useToast();
 
   const {
@@ -100,16 +101,17 @@ export default function DrawingCanvas({
     onSaveStatusChange("Ready");
   }, [clearCanvas, onSaveStatusChange]);
 
-  // Auto-save functionality
+  // Auto-save functionality - only when there are actual changes
   useEffect(() => {
-    if (!isDrawing && selectedImage) {
+    if (!isDrawing && selectedImage && hasChanges) {
       const timer = setTimeout(() => {
         handleSaveAnnotation();
-      }, 1000); // Auto-save 1 second after drawing stops
+        setHasChanges(false);
+      }, 2000); // Auto-save 2 seconds after drawing stops
       
       return () => clearTimeout(timer);
     }
-  }, [isDrawing, selectedImage, handleSaveAnnotation]);
+  }, [isDrawing, selectedImage, hasChanges, handleSaveAnnotation]);
 
   const handleZoomIn = () => {
     setZoom(prev => Math.min(prev + 0.25, 3));
