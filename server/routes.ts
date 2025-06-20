@@ -17,9 +17,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Upload images endpoint
   app.post("/api/images/upload", upload.array('images'), async (req, res) => {
     try {
-      console.log('Upload request received');
-      console.log('Files:', req.files);
-      console.log('Body:', req.body);
+      console.log(`Upload request received with ${req.files ? req.files.length : 0} files`);
       
       const files = req.files as Express.Multer.File[];
       if (!files || files.length === 0) {

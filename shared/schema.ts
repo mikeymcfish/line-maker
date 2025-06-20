@@ -20,6 +20,9 @@ export const annotations = pgTable("annotations", {
 
 export const insertImageSchema = createInsertSchema(images).omit({
   id: true,
+}).extend({
+  width: z.number().nullable().optional(),
+  height: z.number().nullable().optional(),
 });
 
 export const insertAnnotationSchema = createInsertSchema(annotations).omit({

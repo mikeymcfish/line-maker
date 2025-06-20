@@ -67,8 +67,16 @@ export default function AnnotationTool() {
           onBrushSizeChange={setBrushSize}
           onNextImage={handleNextImage}
           onPrevImage={handlePrevImage}
-          onSaveAnnotation={() => {}}
-          onClearCanvas={() => {}}
+          onSaveAnnotation={() => {
+            if ((window as any).saveAnnotation) {
+              (window as any).saveAnnotation();
+            }
+          }}
+          onClearCanvas={() => {
+            if ((window as any).clearCanvas) {
+              (window as any).clearCanvas();
+            }
+          }}
         />
         
         <div className="flex-1 p-4 overflow-hidden">
