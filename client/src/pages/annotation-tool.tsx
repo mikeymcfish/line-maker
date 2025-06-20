@@ -31,7 +31,14 @@ export default function AnnotationTool() {
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
+      // Only handle keys when not typing in input fields
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+      
+      // Prevent default behavior for our handled keys
       if (e.key.toLowerCase() === 'x') {
+        e.preventDefault();
         // Cycle through colors: black -> red -> blue -> black
         setDrawingColor(prev => {
           switch (prev) {
@@ -42,6 +49,7 @@ export default function AnnotationTool() {
           }
         });
       } else if (e.key.toLowerCase() === 's') {
+        e.preventDefault();
         // Cycle through tools: pen -> circle -> pen
         setDrawingTool(prev => prev === "pen" ? "circle" : "pen");
       }
