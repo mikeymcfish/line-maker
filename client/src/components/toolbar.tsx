@@ -8,12 +8,16 @@ interface ToolbarProps {
   brushSize: number;
   saveStatus: string;
   isStraightLine?: boolean;
+  drawingColor?: string;
+  drawingTool?: "pen" | "circle";
   onBrushSizeChange: (size: number) => void;
   onNextImage: () => void;
   onPrevImage: () => void;
   onSaveAnnotation: () => void;
   onClearCanvas: () => void;
   onToggleStraightLine?: () => void;
+  onColorChange?: (color: string) => void;
+  onToolChange?: (tool: "pen" | "circle") => void;
 }
 
 export default function Toolbar({

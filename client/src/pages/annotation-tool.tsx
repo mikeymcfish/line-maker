@@ -11,6 +11,8 @@ export default function AnnotationTool() {
   const [brushSize, setBrushSize] = useState<number>(10);
   const [saveStatus, setSaveStatus] = useState<string>("Ready");
   const [isStraightLine, setIsStraightLine] = useState<boolean>(false);
+  const [drawingColor, setDrawingColor] = useState<string>("#000000"); // black, red, blue
+  const [drawingTool, setDrawingTool] = useState<"pen" | "circle">("pen");
 
   const { data: imagesData, refetch: refetchImages } = useQuery({
     queryKey: ["/api/images"],
@@ -25,6 +27,29 @@ export default function AnnotationTool() {
       }
     }
   }, [imagesData, selectedImageIndex]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() === 'x') {
+        // Cycle through colors: black -> red -> blue -> black
+        setDrawingColor(prev => {
+          switch (prev) {
+            case "#000000": return "#FF0000"; // black to red
+            case "#FF0000": return "#0000FF"; // red to blue
+            case "#0000FF": return "#000000"; // blue to black
+            default: return "#000000";
+          }
+        });
+      } else if (e.key.toLowerCase() === 's') {
+        // Cycle through tools: pen -> circle -> pen
+        setDrawingTool(prev => prev === "pen" ? "circle" : "pen");
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, []);
 
   const selectedImage = images[selectedImageIndex];
 
@@ -66,10 +91,14 @@ export default function AnnotationTool() {
           brushSize={brushSize}
           saveStatus={saveStatus}
           isStraightLine={isStraightLine}
+          drawingColor={drawingColor}
+          drawingTool={drawingTool}
           onBrushSizeChange={setBrushSize}
           onNextImage={handleNextImage}
           onPrevImage={handlePrevImage}
           onToggleStraightLine={() => setIsStraightLine(!isStraightLine)}
+          onColorChange={setDrawingColor}
+          onToolChange={setDrawingTool}
           onSaveAnnotation={() => {
             if ((window as any).saveAnnotation) {
               (window as any).saveAnnotation();
@@ -88,6 +117,8 @@ export default function AnnotationTool() {
               selectedImage={selectedImage}
               brushSize={brushSize}
               isStraightLine={isStraightLine}
+              drawingColor={drawingColor}
+              drawingTool={drawingTool}
               onSaveStatusChange={setSaveStatus}
             />
           </div>
