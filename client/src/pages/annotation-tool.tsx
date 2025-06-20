@@ -8,7 +8,7 @@ import type { Image } from "@shared/schema";
 export default function AnnotationTool() {
   const [images, setImages] = useState<Image[]>([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
-  const [brushSize, setBrushSize] = useState<number>(3);
+  const [brushSize, setBrushSize] = useState<number>(10);
   const [saveStatus, setSaveStatus] = useState<string>("Ready");
   const [isStraightLine, setIsStraightLine] = useState<boolean>(false);
 
@@ -87,6 +87,7 @@ export default function AnnotationTool() {
             <DrawingCanvas
               selectedImage={selectedImage}
               brushSize={brushSize}
+              isStraightLine={isStraightLine}
               onSaveStatusChange={setSaveStatus}
             />
           </div>

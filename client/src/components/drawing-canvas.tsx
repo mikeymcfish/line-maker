@@ -9,12 +9,14 @@ import type { Image } from "@shared/schema";
 interface DrawingCanvasProps {
   selectedImage: Image | undefined;
   brushSize: number;
+  isStraightLine: boolean;
   onSaveStatusChange: (status: string) => void;
 }
 
 export default function DrawingCanvas({
   selectedImage,
   brushSize,
+  isStraightLine,
   onSaveStatusChange,
 }: DrawingCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -31,9 +33,7 @@ export default function DrawingCanvas({
     stopDrawing,
     clearCanvas,
     getCanvasDataURL,
-    toggleStraightLine,
-    isStraightLine,
-  } = useCanvasDrawing(canvasRef, brushSize);
+  } = useCanvasDrawing(canvasRef, brushSize, isStraightLine);
 
   const saveMutation = useMutation({
     mutationFn: async ({ imageId, filename, canvasData }: {

@@ -2,7 +2,9 @@ import { useState, useRef } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { FolderOpen, Check, Circle } from "lucide-react";
+import { FolderOpen, Check, Circle, Upload } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import type { Image } from "@shared/schema";
 
 interface ImageSidebarProps {
@@ -19,6 +21,7 @@ export default function ImageSidebar({
   onSelectImage,
 }: ImageSidebarProps) {
   const [isDragOver, setIsDragOver] = useState(false);
+  const [folderPath, setFolderPath] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -103,18 +106,41 @@ export default function ImageSidebar({
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Load Image Folder
           </label>
-          <div className="space-y-2">
-            {/* Folder Selection */}
+          <div className="space-y-3">
+            {/* Folder Path Input */}
+            <div className="space-y-2">
+              <label className="text-xs font-medium text-gray-700">Folder Path:</label>
+              <div className="flex space-x-2">
+                <Input
+                  value={folderPath}
+                  onChange={(e) => setFolderPath(e.target.value)}
+                  placeholder="Enter folder path (e.g., /path/to/images)"
+                  className="text-sm"
+                />
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    toast({
+                      title: "Manual folder loading",
+                      description: "Use file browser below for now",
+                      variant: "default",
+                    });
+                  }}
+                  className="px-3"
+                >
+                  <Upload className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+
+            {/* File Browser */}
             <div className="relative">
               <input
-                ref={fileInputRef}
                 type="file"
-                webkitdirectory=""
                 multiple
                 accept="image/*"
                 onChange={(e) => handleFileSelect(e.target.files)}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                style={{ WebkitAppearance: 'none' }}
               />
               <div
                 className={`flex items-center justify-center w-full h-20 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
@@ -129,24 +155,8 @@ export default function ImageSidebar({
                 <div className="text-center">
                   <FolderOpen className="w-6 h-6 text-gray-400 mx-auto mb-1" />
                   <p className="text-sm text-gray-600">
-                    {uploadMutation.isPending ? 'Uploading...' : 'Click to select folder'}
+                    {uploadMutation.isPending ? 'Uploading...' : 'Select multiple images or drag here'}
                   </p>
-                </div>
-              </div>
-            </div>
-            
-            {/* Individual Files Selection */}
-            <div className="relative">
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={(e) => handleFileSelect(e.target.files)}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              />
-              <div className="flex items-center justify-center w-full h-16 border border-gray-300 bg-gray-50 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors">
-                <div className="text-center">
-                  <p className="text-xs text-gray-600">Or select individual images</p>
                 </div>
               </div>
             </div>
